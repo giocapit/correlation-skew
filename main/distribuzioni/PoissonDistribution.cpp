@@ -13,9 +13,11 @@ PoissonDistribution::PoissonDistribution(double lambda_)
 	lambda = lambda_;
 	if (lambda == 0)
 	{
-		funcPointer = &extractPoissonNull;
+//		funcPointer = &extractPoissonNull;
+		extractor = new DegenerateExtractor();
 	}else{
-		funcPointer = &extractPoisson;
+//		funcPointer = &extractPoisson;
+		extractor = new Extractor();
 	}
 	
 //  gsl_rng_env_setup();
@@ -56,8 +58,29 @@ int PoissonDistribution::extractPoissonNull(double T)
 
 int PoissonDistribution::operator()(double T)
 {
-	return (*this.*funcPointer)(T);
+//	return (*this.*funcPointer)(T);
+	return extractor->extract(T, lambda);
 	
+}
+
+int PoissonDistribution::Extractor::extract(double T, double lambda)
+{
+	double x = randUniform(generator);
+	double cumPoisson=0;
+	int fattoriale = 1;
+	for (int i = 0; true; i++)
+	{
+		double Pi = exp(-lambda * T) * pow(lambda * T,i)/fattoriale;
+		fattoriale = fattoriale * (i+1);
+		cumPoisson = cumPoisson + Pi;
+		if (x < cumPoisson)
+			return i;
+	}
+}
+
+int PoissonDistribution::DegenerateExtractor::extract(double T, double lambda)
+{
+	return 0;
 }
 
 double PoissonDistributionAntitetica::operator ()(double T)

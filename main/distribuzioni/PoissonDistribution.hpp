@@ -7,6 +7,24 @@ class PoissonDistribution
 	protected:
 		double lambda;
 		int (PoissonDistribution::*funcPointer)(double);
+		class Extractor
+		{
+			public:
+				Extractor(){};
+				~Extractor(){};
+
+				virtual int extract(double T, double lambda_);
+		};
+		
+		class DegenerateExtractor:public Extractor
+		{
+			public:
+				DegenerateExtractor(){};
+				~DegenerateExtractor(){};
+				int extract(double T, double lambda_);
+		};
+
+		Extractor* extractor;
 //  const gsl_rng_type * Type;
 //  gsl_rng * r;
 
