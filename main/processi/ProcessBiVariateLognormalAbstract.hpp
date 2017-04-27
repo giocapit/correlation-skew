@@ -67,6 +67,9 @@ class ProcessBiVariateLognormalAbstract: public ProcessBiVariate
 		void setSigma1(double sigma);
 		void setSigma2(double sigma);
 		bool useEulerToCalculateCorrelation(){return false;}
+		double getSigma1();
+		double getSigma2();
+		double getRho();
 
 };
 #endif

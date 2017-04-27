@@ -4,14 +4,20 @@
 class MCOptionPricer: public OptionPricer
 {
 	private:
-		int N;//numero di simulazioni
+		static int N;//numero di simulazioni
 		MCResults* statistiche;
 	public:
 		MCOptionPricer():OptionPricer()
 	{
-		N = 0;
 		statistiche = 0;
 	};
+		MCOptionPricer(Option *opzione, 
+				Process *processo,
+				double riskFreeRate_)
+			: OptionPricer(opzione, processo,riskFreeRate_)
+	{
+		statistiche = new MCResults(N);
+	}
 		MCOptionPricer(Option *opzione, 
 				Process *processo,
 				double riskFreeRate_,
@@ -49,3 +55,4 @@ class MCOptionPricer: public OptionPricer
 		return statistiche->getMontecarloError();
 	}
 };
+

@@ -98,7 +98,8 @@ int main (int argc,char* argv[])
 				Nsim
 		);
 		ofstream miofile;
-		miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\risultatiSalti.csv"/*,std::ios_base::app*/);
+		//miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\risultatiSalti.csv"/*,std::ios_base::app*/);
+		miofile.open("/home/giovanni/projects/correlation-skew/build/risultatiSalti.csv"/*,std::ios_base::app*/);
 		for (int i = 0 ; i <num_strikes;i++)
 		{
 			miofile << setprecision(11) << result[i] << "\n";

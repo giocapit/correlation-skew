@@ -1,5 +1,5 @@
 #include "ProcessJumpDiffusion.hpp"
-#include "Calibratore.hpp"
+#include "MertonCalibrator.hpp"
 #include "VolSurfaceSkew.hpp"
 #include "bsformula.hpp"
 

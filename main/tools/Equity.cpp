@@ -73,13 +73,13 @@ void Equity::calculateVolatilitySurface(Process* process, double T,double riskFr
 	for (int i = 0; i < dimVol ; i++)
 	{
 		double optPrice = mertonPrice(spot,
-										(*strikes)[i] * spot,
-										riskFree,
-										T,
-										lambda,
-										J,
-										sigma,
-										1);
+		(*strikes)[i] * spot,
+		riskFree,
+		T,
+		lambda,
+		J,
+		sigma,
+		1);
 		double vola = bsImplVol(spot, optPrice, (*strikes)[i] * spot, riskFree,T);
 		implVolSkew->setVol(vola,i);
 	}

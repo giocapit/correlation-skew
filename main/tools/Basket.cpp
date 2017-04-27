@@ -1,45 +1,14 @@
 #include "Basket.hpp"
 #include "BasketOption.hpp"
-#include "MCOptionPricer.hpp"
-#include "ProcessBiVariateLognormalEulero.hpp"
-#include "ProcessBiVariateLognormal.hpp"
-#include "froot.hpp"
 #include "Functional.hpp"
 #include "VolSurfaceSkew.hpp"
+#include "CorrelationExtractors.hpp"
 #include <fstream>
 
 using namespace std;
 
+int MCOptionPricer::N = 0;
 
-class FunctionalForCorrelationSkewCalculation:public Functional
-{
-	private:
-		ProcessBiVariateLognormalAbstract *p;
-		MCOptionPricer *pricer;
-		double price;
-	public:
-		FunctionalForCorrelationSkewCalculation(ProcessBiVariateLognormalAbstract * p_, MCOptionPricer *pricer_, double price_, bool usaEulero)
-		{
-			p = p_;
-			pricer = pricer_;
-			price = price_;
-		}
-		double operator()(double rho) const
-		{
-			p->setRho(rho);
-			double priceBS = pricer->getOptionPriceFromAlreadyGeneratedPath();
-#ifdef STAMPA_BISEZIONE
-	ofstream miofile;
-	miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\dump.csv",std::ios_base::app);
-	miofile << priceBS << ";" << rho <<std::endl ;
-	miofile.flush();
-	miofile.close();
-#endif
-
-			return priceBS-price;
-		}
-
-};
 
 Basket::~Basket()
 {
@@ -58,7 +27,7 @@ void Basket::initializeCorrelationSurface()
 
 void Basket::calculateCorrelationSurface(ProcessBiVariate* p, double T, double riskFreeRate)
 {
-		calculateCorrelationSurface( p,  T,  riskFreeRate, 1000000);
+	calculateCorrelationSurface( p,  T,  riskFreeRate, 1000000);
 }
 
 void Basket::calculateCorrelationSurface(ProcessBiVariate* p, double T, double riskFreeRate,int Nsim_)
@@ -94,14 +63,9 @@ void Basket::calculateCorrelationSurface(ProcessBiVariate* p, double T, double r
 	}
 
 	double *optionPrices = new double[dimSkew];
-	ProcessBiVariateLognormalAbstract* procBS;
-	bool usaEulero = p->useEulerToCalculateCorrelation();
-	if (usaEulero)
-	{
-		procBS = new ProcessBiVariateLognormalEulero(p);
-	}else{
-		procBS = new ProcessBiVariateLognormal(p);
-	}
+
+	SimpleCorrelationExtractor corrExtractor = SimpleCorrelationExtractor(this, p);
+
 #ifdef STAMPA_PREZZI_BASKET
 	ofstream miofile;
 	miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\dump.csv");
@@ -109,26 +73,20 @@ void Basket::calculateCorrelationSurface(ProcessBiVariate* p, double T, double r
 
 	for (int i = 0; i < dimSkew; i++)
 	{
-		MCOptionPricer pricerBS = MCOptionPricer(&basketOptions[i], procBS, riskFreeRate, Nsim);
-		//double strike = (*strikes)[i];
 		double sigmaBSComponent1 = component1->getImpliedVolatility(i);
-		procBS->setSigma1(sigmaBSComponent1);
 		double sigmaBSComponent2 = component2->getImpliedVolatility(i);
-		procBS->setSigma2(sigmaBSComponent2);
 		optionPrices[i] = pricers[i].getOptionPriceFromCumulatedPayoff();
 #ifdef STAMPA_PREZZI_BASKET
 		miofile << optionPrices[i] << std::endl ;
 		miofile.flush();
 #endif
-		FunctionalForCorrelationSkewCalculation f = FunctionalForCorrelationSkewCalculation(procBS, &pricerBS, optionPrices[i],usaEulero);
-		double rho = froot(&f,-1,1);
+		double rho = corrExtractor.extract(sigmaBSComponent1,sigmaBSComponent2, optionPrices[i], (*strikes)[i], riskFreeRate, T);
+
 		((CorrelationSurfaceSkew*) corrSurf)->setCorrelation(rho,i);
 	}
 #ifdef STAMPA_PREZZI_BASKET
 	miofile.close();
 #endif
-	procBS->prepareForDestruction();
-	delete procBS;
 	delete [] basketOptions;
 	delete [] pricers;
 	delete [] optionPrices;

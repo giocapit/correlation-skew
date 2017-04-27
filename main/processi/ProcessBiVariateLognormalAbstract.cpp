@@ -10,3 +10,15 @@ void ProcessBiVariateLognormalAbstract::setSigma2(double sigma)
 {
 	sigma2 = sigma;
 }
+double ProcessBiVariateLognormalAbstract::getSigma1()
+{
+	return sigma1;
+}
+double ProcessBiVariateLognormalAbstract::getSigma2()
+{
+	return sigma1;
+}
+double ProcessBiVariateLognormalAbstract::getRho()
+{
+	return rho;
+}

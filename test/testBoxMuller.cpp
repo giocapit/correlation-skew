@@ -1,4 +1,4 @@
-#include "../main/NormalDistribution.hpp"
+#include "NormalDistribution.hpp"
 #include <iostream>
 #include <fstream>
 #include <cmath>
