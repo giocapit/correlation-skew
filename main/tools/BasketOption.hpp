@@ -1,3 +1,5 @@
+#ifndef BaskeOption_hpp
+#define BaskeOption_hpp
 #include "Equity.hpp"
 #include "Basket.hpp"
 #include "Option.hpp"
@@ -19,3 +21,4 @@ class BasketOption: public Option
 		double payoff(double spotIndex) const;
 
 };
+#endif

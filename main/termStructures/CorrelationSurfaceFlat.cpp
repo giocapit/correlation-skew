@@ -5,7 +5,7 @@ CorrelationSurfaceFlat::CorrelationSurfaceFlat(double corr_)
 	corr = corr_;
 }
 
-double CorrelationSurfaceFlat::getCorr()
+double CorrelationSurfaceFlat::getCorr(int i)
 {
 	return corr;
 }

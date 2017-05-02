@@ -6,7 +6,7 @@ class CorrelationSurfaceFlat : public CorrelationSurface
 		double corr;
 	public:
 		CorrelationSurfaceFlat(double corr_);
-		~CorrelationSurfaceFlat();
+		~CorrelationSurfaceFlat(){};
 
-		double getCorr();
+		double getCorr(int i);
 };

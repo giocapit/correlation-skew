@@ -9,7 +9,8 @@
 #include <string>
 #include <time.h>
 
-#include "../ProcessBiVariateLognormal.hpp"
+#include "ProcessBiVariateLognormal.hpp"
+#include "bsformula.hpp"
 
 using namespace std;
 
@@ -30,7 +31,8 @@ int main (int argc,char* argv[])
 		double rho = 0.142;
 		double expiry = 1;
 		double riskFreeRate = 0.03;
-		Option::type cp = Option::call;
+		Option::type cp = Option::put;
+		Option::type cpComponents = Option::put;
 
 		std::cout << argv[0];
 		for (int i = 1; i < argc; i++) { /* We will iterate over argv[] to get the parameters stored inside.
@@ -82,13 +84,27 @@ int main (int argc,char* argv[])
 												riskFreeRate ,
 												nSim,
 												new MCResultsErroreMontecarloAntitetico(nSim));
-		double price = pricer.getOptionPrice();
-		double MCerror = pricer.getErroreMontecarlo();
+		double priceBasket = pricer.getOptionPrice();
 
+		double priceAsset1 = bsprice(multiplier,
+										strike*multiplier,
+										riskFreeRate,
+										expiry,
+										sigma1,
+										0,
+										cpComponents);
+
+		double priceAsset2 = bsprice(multiplier,
+										strike*multiplier,
+										riskFreeRate,
+										expiry,
+										sigma2,
+										0,
+										cpComponents);
 
 		ofstream miofile;
 		miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\MCPrice.csv"/*,std::ios_base::app*/);
-		miofile << setprecision(11) << price << "\n" << MCerror << "\n";
+		miofile << setprecision(11) << -cp*priceBasket + cp * w1 * priceAsset1 + cp * w2 * priceAsset2 << "\n";
 		miofile.close();
 
 		return 0;

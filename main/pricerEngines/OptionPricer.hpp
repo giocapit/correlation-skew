@@ -1,3 +1,5 @@
+#ifndef OptionPricer_hpp 
+#define OptionPricer_hpp
 #include "Option.hpp"
 #include "Process.hpp"
 
@@ -19,5 +21,6 @@ class OptionPricer
 
 		double getRiskFreeRate();
 
-		double getOptionPrice();
-};	
+		virtual double getOptionPrice()=0;
+};
+#endif

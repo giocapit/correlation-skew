@@ -1,14 +1,24 @@
 #include "OptionPricer.hpp"
+#include "BasketOption.hpp"
 
 class BSBasketOptionPricer: public OptionPricer
 {
 	public:
-		BSBasketOptionPricer(const BasketOption *opzione_, Process *processo_, double riskFreeRate_): OptionPricer(const Option*, Process *, double){};
+		BSBasketOptionPricer(const BasketOption *opzione, Process *processo, double riskFreeRate): OptionPricer(opzione, processo, riskFreeRate){};
 
-		~BSBasketOptionPricer();
+		~BSBasketOptionPricer(){};
+
+		double getOptionPrice();
 };
 
-class GeneralizedBSBasketOptionPricer: public OptionPricer{};
+class GeneralizedBSBasketOptionPricer: public OptionPricer
+{
+	public:
+		GeneralizedBSBasketOptionPricer(const BasketOption *opzione, Process *processo, double riskFreeRate): OptionPricer(opzione, processo, riskFreeRate){};
 
+		~GeneralizedBSBasketOptionPricer(){};
+
+		double getOptionPrice();
+};
 
 
