@@ -1,0 +1,10 @@
+target_sources(cmdCalculateCorrelationSkew
+	PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}/Process.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariate.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariateLognormal.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariateLognormalEulero.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariateLognormalAbstract.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariateJumpDiffusion.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessJumpDiffusion.cpp
+		${CMAKE_CURRENT_LIST_DIR}/ProcessBiVariateJumpDiffusionWithCorrelatedJumps.cpp)

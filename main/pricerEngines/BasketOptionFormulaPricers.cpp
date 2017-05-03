@@ -2,6 +2,7 @@
 #include "bsformula.hpp"
 #include "Basket.hpp"
 #include "ProcessBiVariateLognormalAbstract.hpp"
+#include "LognormalDistribution.hpp"
 #include <cmath>
 
 double BSBasketOptionPricer::getOptionPrice()
@@ -38,6 +39,10 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
 	double w1 = underlyingBasket->get_w1();
 	double w2 = underlyingBasket->get_w2();
+
+	double M1 = biVariateLognormalM1(riskFreeRate, w1, w2, rho, sigma1, sigma2);
+	double M2 = biVariateLognormalM2(riskFreeRate, w1, w2, rho, sigma1, sigma2);
+	double M3 = biVariateLognormalM3(riskFreeRate, w1, w2, rho, sigma1, sigma2);
 	return 0;
 
 }
