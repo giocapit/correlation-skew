@@ -1,5 +1,7 @@
 #include "OptionPricer.hpp"
 #include "BasketOption.hpp"
+#include "Functional.hpp"
+#include "LognormalDistribution.hpp"
 
 class BSBasketOptionPricer: public OptionPricer
 {
@@ -19,6 +21,25 @@ class GeneralizedBSBasketOptionPricer: public OptionPricer
 		~GeneralizedBSBasketOptionPricer(){};
 
 		double getOptionPrice();
+
+		class Functional4MomentsCalculation : public MultiFunctional
+	{
+		private:
+			double phiM1;
+			double phiM2;
+			double phiM3;
+
+
+		public:
+			Functional4MomentsCalculation(double phiM1, double phiM2, double phiM3):MultiFunctional()
+		{
+			this->phiM1 = phiM1;
+			this->phiM2 = phiM2;
+			this->phiM2 = phiM2;
+		}
+			std::vector<double> operator()(const std::vector<double> & x) const;
+
+	};
 };
 
 

@@ -1,22 +1,37 @@
 #include <cmath>
 #include "LognormalDistribution.hpp"
 
-double biVariateLognormalM1(double r, double w1, double w2, double rho, double sigma1, double sigma2)
+using namespace std;
+
+void LogNormalDistribution::setParams(double tau, double m,double s)
 {
-    return exp(r);
+
+};
+double LogNormalDistribution::M1() const
+{
+    return M1(tau, m, s);
 }
 
-double biVariateLognormalM2(double r,double w1,double w2,double rho,double sigma1,double sigma2)
+double LogNormalDistribution::M2() const
 {
-    return 2 * w1 * w2 * exp(2 * r + sigma1 * sigma2 * rho) +\
-          pow(w1,2) * exp(2 * r + pow(sigma1,2)) +\
-          pow(w2,2) * exp(2 * r + pow(sigma2,2));
+    return M2(tau, m, s);
 }
 
-double biVariateLognormalM3(double r, double w1, double w2, double rho, double sigma1, double sigma2)
+double LogNormalDistribution::M3() const
 {
-    return pow(w1,3) * exp(3 * r + 3 * pow(sigma1,2)) +\
-            3 * pow(w1,2) * w2 * exp(3 * r + pow(sigma1,2) + 2 * sigma1 * sigma2 * rho) +\
-            3 * pow(w2,2) * w1 * exp(3 * r + pow(sigma2,2) + 2 * sigma1 * sigma2 * rho) +\
-            pow(w2,3) * exp(3 * r + 3 * pow(sigma2,2));
+    return M3(tau, m, s);
 }
+
+
+		double LogNormalDistribution::M1(double tau, double m, double s)
+{
+    return tau + exp(m + 0.5 * pow(s,2));
+};
+		double LogNormalDistribution::M2(double tau, double m, double s)
+{
+    return pow(tau,2) + 2 * tau * exp(m + 0.5 * pow(s,2)) + exp(2 * m + 2 * pow(s,2));
+};
+		double LogNormalDistribution::M3(double tau, double m, double s)
+{
+    return pow(tau,3) + 3 * pow(tau,2) * exp(m + 0.5 * pow(s,2)) + 3 * tau * exp(2 * m + 2 * pow(s,2)) + exp(3 * m + 4.5 * pow(s,2));
+};

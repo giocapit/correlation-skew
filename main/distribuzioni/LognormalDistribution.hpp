@@ -1,7 +1,21 @@
 
-double biVariateLognormalM1(double r, double w1, double w2, double rho, double sigma1, double sigma2);
 
-double biVariateLognormalM2(double r,double w1,double w2,double rho,double sigma1,double sigma2);
+class LogNormalDistribution
+{
+	private:
+		double tau;
+		double m;
+		double s;
 
-double biVariateLognormalM3(double r, double w1, double w2, double rho, double sigma1, double sigma2);
+	public:
+		void setParams(double tau, double m, double s);
 
+		double M1() const;
+		double M2() const;
+		double M3() const;
+
+		
+		static double M1(double tau, double m, double s);
+		static double M2(double tau, double m, double s);
+		static double M3(double tau, double m, double s);
+};
