@@ -1,3 +1,5 @@
+#ifndef basket_option_formula_price_hpp
+#define basket_option_formula_price_hpp
 #include "OptionPricer.hpp"
 #include "BasketOption.hpp"
 #include "Functional.hpp"
@@ -40,6 +42,12 @@ class GeneralizedBSBasketOptionPricer: public OptionPricer
 			std::vector<double> operator()(const std::vector<double> & x) const;
 
 	};
+
+		class Jacobian4MomentsCalculation: public MultiFunctional
+	{
+		public:
+			std::vector<double> operator()(const std::vector<double> & x) const;
+	};
 };
 
-
+#endif

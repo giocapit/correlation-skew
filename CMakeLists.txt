@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (correlation_skew)
 
-include_directories ( ./main/distribuzioni main/interfaces main/processi main/tools main/termStructures main/pricerEngines main test cmd)
+include_directories ( ./main/distribuzioni main/interfaces main/processi main/tools main/termStructures main/pricerEngines main/solvers main test cmd)
 
 file(GLOB TESTSOURCES "test/testBoxMuller.cpp")
 file(GLOB_RECURSE CORR_SKEW_FILES "main/*.hpp" "main/*.cpp")
@@ -14,11 +14,14 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 add_executable (runTestBoxMuller "")# test/testBoxMuller.cpp)
 add_executable(cmdCalculateCorrelationSkew "cmd/cmdCalculateCorrelationSkew.cpp")
 add_executable(basketPricing "prove/basketPricing.cpp")
+add_executable(testBSPricer "test/testBSPricer.cpp")
+
 #add the library
 add_library(CorrSkewLib SHARED ${CORR_SKEW_FILES})
 target_link_libraries(cmdCalculateCorrelationSkew m gsl gslcblas)
 target_link_libraries(CorrSkewLib m gsl gslcblas)
 target_link_libraries(basketPricing CorrSkewLib)
+target_link_libraries(testBSPricer CorrSkewLib)
 
 include(main/distribuzioni/CMakeLists.txt)
 include(main/tools/CMakeLists.txt)

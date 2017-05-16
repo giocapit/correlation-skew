@@ -17,7 +17,7 @@ int main()
 	double strike = 1;
 	double sigma1 = 0.2;
 	double sigma2 = 0.3;
-	double rho = 1;//0.142
+	double rho = 0.142;
 	double expiry = 1;
 	double riskFreeRate = 0.03;
 	Option::type cp = Option::call;
@@ -38,11 +38,15 @@ int main()
 			riskFreeRate ,
 			nSim);
 	BSBasketOptionPricer bsoptionpricer = BSBasketOptionPricer(& opzione, &process, riskFreeRate); 
+	GeneralizedBSBasketOptionPricer genbsoptionpricer = GeneralizedBSBasketOptionPricer(& opzione, &process, riskFreeRate);
 	double mcprice = montecarlopricer.getOptionPrice();
 	double bsprice = bsoptionpricer.getOptionPrice();
+	double genbsprice = genbsoptionpricer.getOptionPrice();
+	
 
 	cout << mcprice << endl
-		<< bsprice << endl;
+		<< bsprice << endl
+		<< genbsprice << endl;
 
 	return 0;
 
