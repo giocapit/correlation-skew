@@ -42,8 +42,6 @@ operator()(const std::vector<double> & x) const
 	double y2 = LogNormalDistribution::M3(x[0], x[1], x[2]) - phiM3;
 	std::vector<double> y = {y0, y1, y2};
 	return y;
-
-
 };
 
 std::vector<double> GeneralizedBSBasketOptionPricer::Jacobian4MomentsCalculation::
@@ -106,7 +104,7 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 				new Jacobian4MomentsCalculation(), 
 				x0);
 	
-	solver.solveWithDf();
+	solver.solve();
 
 	std::vector<double> y = solver.getSol();
 

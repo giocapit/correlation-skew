@@ -16,7 +16,7 @@ double ProcessBiVariateLognormalAbstract::getSigma1()
 }
 double ProcessBiVariateLognormalAbstract::getSigma2()
 {
-	return sigma1;
+	return sigma2;
 }
 double ProcessBiVariateLognormalAbstract::getRho()
 {

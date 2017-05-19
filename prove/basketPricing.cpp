@@ -3,6 +3,7 @@
 #include "Equity.hpp"
 #include "BasketOption.hpp"
 #include "ProcessBiVariateLognormal.hpp"
+#include "LognormalSumDistribution.hpp"
 #include <iostream>
 
 using namespace std;
@@ -15,11 +16,11 @@ int main()
 	double w1 = 0.5;
 	double w2 = 0.5;
 	double strike = 1;
-	double sigma1 = 0.2;
-	double sigma2 = 0.3;
-	double rho = 0.142;
+	double sigma1 = 0.3;
+	double sigma2 = 0.15;
+	double rho = 0.5;
 	double expiry = 1;
-	double riskFreeRate = 0.03;
+	double riskFreeRate = 0.02;
 	Option::type cp = Option::call;
 
 
@@ -33,6 +34,8 @@ int main()
 	NormalDistributionAntitetica* N2 = new NormalDistributionAntitetica();
 
 	ProcessBiVariateLognormal process = ProcessBiVariateLognormal(sigma1,sigma2,rho, nSim, N1, N2);
+	cout << process.getSigma1();
+	cout << process.getSigma2();
 	MCOptionPricer montecarlopricer = MCOptionPricer(&opzione,
 			&process,
 			riskFreeRate ,
@@ -43,6 +46,14 @@ int main()
 	double bsprice = bsoptionpricer.getOptionPrice();
 	double genbsprice = genbsoptionpricer.getOptionPrice();
 	
+	
+	LognormalSumDistribution phi(riskFreeRate, w1, w2, rho, sigma1, sigma2);
+
+	double M1 = phi.M1();
+	double M2 = phi.M2();
+	double M3 = phi.M3();
+	
+	cout << M1 << "	" << M2 << "	" << M3 << "\n";
 
 	cout << mcprice << endl
 		<< bsprice << endl

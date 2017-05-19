@@ -69,7 +69,7 @@ int call_fdf (const gsl_vector * x, void *params,
 	int
 EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 {
-	printf ("iter = %3u x = % .3f % .3f % .3f"
+	printf ("iter = %3u x = % .5e % .5e % .5e"
 			"f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
@@ -84,7 +84,7 @@ EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 	int
 EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 {
-	printf ("iter = %3u x = % .3f % .3f % .3f"
+	printf ("iter = %3u x = % .5f % .5f % .5f"
 			"f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
@@ -93,6 +93,10 @@ EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 			gsl_vector_get (s->f, 0),
 			gsl_vector_get (s->f, 1),
 			gsl_vector_get (s->f, 2));
+	printf("residue = % .3f\n",
+			abs(gsl_vector_get (s->f, 0))+
+			abs(gsl_vector_get (s->f, 1))+
+			abs(gsl_vector_get (s->f, 2)));
 	return 0;
 }
 
@@ -195,10 +199,7 @@ int EqSystemSolver::solveWithDf (void)
 		gsl_vector_set (x, i, x_init[i]);
 	}
 
-	gsl_vector_set (x, 0, x_init[0]);
-	gsl_vector_set (x, 1, x_init[1]);
-
-	T = gsl_multiroot_fdfsolver_gnewton;
+	T = gsl_multiroot_fdfsolver_hybridsj;
 	s = gsl_multiroot_fdfsolver_alloc (T, n);
 	gsl_multiroot_fdfsolver_set (s, &f, x);
 
