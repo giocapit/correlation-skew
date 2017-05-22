@@ -1,4 +1,5 @@
 #include "EqSystemSolver.hpp"
+#include <gsl/gsl_blas.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -44,13 +45,13 @@ int call_df (const gsl_vector * x, void *params,
 
 
 	gsl_matrix_set (J, 0, 0, y[0]);
-	gsl_matrix_set (J, 0, 1, y[1]);
-	gsl_matrix_set (J, 0, 2, y[2]);
-	gsl_matrix_set (J, 1, 0, y[3]);
+	gsl_matrix_set (J, 0, 1, y[3]);
+	gsl_matrix_set (J, 0, 2, y[6]);
+	gsl_matrix_set (J, 1, 0, y[1]);
 	gsl_matrix_set (J, 1, 1, y[4]);
-	gsl_matrix_set (J, 1, 2, y[5]);
-	gsl_matrix_set (J, 2, 0, y[6]);
-	gsl_matrix_set (J, 2, 1, y[7]);
+	gsl_matrix_set (J, 1, 2, y[7]);
+	gsl_matrix_set (J, 2, 0, y[2]);
+	gsl_matrix_set (J, 2, 1, y[5]);
 	gsl_matrix_set (J, 2, 2, y[8]);
 
 	return GSL_SUCCESS;
@@ -93,10 +94,36 @@ EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 			gsl_vector_get (s->f, 0),
 			gsl_vector_get (s->f, 1),
 			gsl_vector_get (s->f, 2));
+	gsl_vector* last_step = gsl_multiroot_fdfsolver_dx(s);
 	printf("residue = % .3f\n",
-			abs(gsl_vector_get (s->f, 0))+
-			abs(gsl_vector_get (s->f, 1))+
-			abs(gsl_vector_get (s->f, 2)));
+			sqrt(pow(abs(gsl_vector_get (s->f, 0)),2)+
+			pow(abs(gsl_vector_get (s->f, 1)),2)+
+			pow(abs(gsl_vector_get (s->f, 2)),2)));
+	printf("last step was % .5e, % .5e, % .5e\n" ,
+			gsl_vector_get (last_step, 0),
+			gsl_vector_get (last_step, 0),
+			gsl_vector_get (last_step, 0));
+
+	for (int i=0; i<3; i++)
+	{
+	gsl_vector_view v = gsl_matrix_column(s->J,i);
+	double d = gsl_blas_dnrm2(&v.vector);
+	//printf("the norm of the % .1i th column of J is % .5e\n", i, d);
+
+
+	}
+
+
+	for (int i=0; i<3; i++)
+	{
+	gsl_vector_view v = gsl_matrix_row(s->J,i);
+//	printf(" % .5e  % .5e % .5e\n", 
+//			gsl_vector_get (&v.vector, 0),
+//			gsl_vector_get (&v.vector, 1),
+//			gsl_vector_get (&v.vector, 2)
+//	      );
+
+	}
 	return 0;
 }
 
@@ -144,6 +171,7 @@ int EqSystemSolver::solve (void)
 	}
 
 	T = gsl_multiroot_fsolver_hybrids;
+	//T = gsl_multiroot_fsolver_dnewton;
 	s = gsl_multiroot_fsolver_alloc (T, 3);
 	gsl_multiroot_fsolver_set (s, &f, x);
 
@@ -200,6 +228,7 @@ int EqSystemSolver::solveWithDf (void)
 	}
 
 	T = gsl_multiroot_fdfsolver_hybridsj;
+	//T = gsl_multiroot_fdfsolver_newton;
 	s = gsl_multiroot_fdfsolver_alloc (T, n);
 	gsl_multiroot_fdfsolver_set (s, &f, x);
 

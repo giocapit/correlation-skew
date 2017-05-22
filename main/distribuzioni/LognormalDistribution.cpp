@@ -1,4 +1,5 @@
 #include <cmath>
+//#include <stdio.h>
 #include "LognormalDistribution.hpp"
 
 using namespace std;
@@ -35,11 +36,17 @@ double LogNormalDistribution::M1(double tau, double m, double s)
 };
 double LogNormalDistribution::M2(double tau, double m, double s)
 {
-	return pow(tau,2) + 2 * tau * exp(m + 0.5 * pow(s,2)) + exp(2 * m + 2 * pow(s,2));
+	return pow(tau,2) 
+		+ 2 * tau * exp(m + 0.5 * pow(s,2)) 
+		+ exp(2 * m + 2 * pow(s,2));
 };
 double LogNormalDistribution::M3(double tau, double m, double s)
 {
-	return pow(tau,3) + 3 * pow(tau,2) * exp(m + 0.5 * pow(s,2)) + 3 * tau * exp(2 * m + 2 * pow(s,2)) + exp(3 * m + 4.5 * pow(s,2));
+	//printf("inputs for M3 are % .5e % .5e %.5e\n",tau, m, s);
+	return pow(tau,3) 
+		+ 3 * pow(tau,2) * exp(m + 0.5 * pow(s,2)) 
+		+ 3 * tau * exp(2 * m + 2 * pow(s,2)) 
+		+ exp(3 * m + 4.5 * pow(s,2));
 };
 
 double LogNormalDistribution::getTau() const

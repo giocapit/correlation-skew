@@ -6,6 +6,7 @@
 #include "Functional.hpp"
 #include "EqSystemSolver.hpp"
 #include "NormalDistribution.hpp"
+#include "BSPricer.hpp"
 #include <cmath>
 
 double BSBasketOptionPricer::getOptionPrice()
@@ -41,6 +42,9 @@ operator()(const std::vector<double> & x) const
 	double y1 = LogNormalDistribution::M2(x[0], x[1], x[2]) - phiM2;
 	double y2 = LogNormalDistribution::M3(x[0], x[1], x[2]) - phiM3;
 	std::vector<double> y = {y0, y1, y2};
+//	printf("y0 is % .5e\n", LogNormalDistribution::M1(x[0],x[1],x[2]));
+//	printf("y1 is % .5e\n", LogNormalDistribution::M2(x[0],x[1],x[2]));
+//	printf("y2 is % .5e\n", LogNormalDistribution::M3(x[0],x[1],x[2]));
 	return y;
 };
 
@@ -66,7 +70,7 @@ operator()(const std::vector<double> & x) const
 	double dM3_ds = 3 * pow(tau,2) * s * exp(m + 0.5 * pow(s,2)) + 
 		12 * tau * s * exp(2 * m + 2 * pow(s,2)) + 
 		9 * s * exp(3 * m + 4.5 * pow(s,2));
-
+	printf("diagonal : % .5e  %.5e  %.5e\n",dM1_dtau,dM2_dm, dM3_ds);
 	std::vector<double> y = {dM1_dtau,
 		dM2_dtau,
 		dM3_dtau,
@@ -99,31 +103,42 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 			+ 2*rho*w1*w2*sigma1*sigma2);
 
 	std::vector<double> x0 = {0, riskFreeRate - 0.5 * pow(basketSigma,2), basketSigma};
+	//x0={-0.09516028, 0.09247293,  0.18278819};
 
 	EqSystemSolver solver(new Functional4MomentsCalculation(M1,M2,M3),
 				new Jacobian4MomentsCalculation(), 
 				x0);
 	
-	solver.solve();
+	solver.solveWithDf();
 
-	std::vector<double> y = solver.getSol();
+	std::vector<double> x = solver.getSol();
 
 	double strike = opzione->getStrike();
 
-	double tau = y[0];
+	double tau = x[0];
+	double m = x[1];
+	double sigma = x[2];
+	printf("% .5e  %.5e  %.5e\n",tau, m, sigma);
 
+	LogNormalDistribution* psi = new LogNormalDistribution(tau, m, sigma);
+
+	printf("% .5e  %.5e  %.5e\n",psi->M1(), psi->M2(), psi->M3());
+	double T = opzione->getExpiry();
+	BSPricer pricer(psi);
+	double price = pricer.bsformula(riskFreeRate, T, strike);
+/*
 	double V = sqrt(log((M2 - 2 * tau * M1 + pow(tau,2))/(pow(M1 - tau,2))));
 
 	double d1 = (log(M1 - tau) - log(strike - tau) + 0.5 * pow(V,2)) / V;
 
 	double d2 = d1 - V;
 
-	double T = opzione->getExpiry();
 
 	CumulativeNormalDistribution N(0, 1);
 
 	double price = exp(-riskFreeRate * T) * ((M1 - tau) * N(d1) - (strike - tau) * N(d2));
-
+*/
+	printf("% .5e  %.5e  %.5e\n",riskFreeRate, T, strike);
 	return price;
 
 }

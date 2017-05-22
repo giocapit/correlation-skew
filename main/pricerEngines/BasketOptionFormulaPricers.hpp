@@ -37,7 +37,7 @@ class GeneralizedBSBasketOptionPricer: public OptionPricer
 		{
 			this->phiM1 = phiM1;
 			this->phiM2 = phiM2;
-			this->phiM2 = phiM2;
+			this->phiM3 = phiM3;
 		}
 			std::vector<double> operator()(const std::vector<double> & x) const;
 
