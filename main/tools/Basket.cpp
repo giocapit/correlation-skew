@@ -64,7 +64,7 @@ void Basket::calculateCorrelationSurface(ProcessBiVariate* p, double T, double r
 
 	double *optionPrices = new double[dimSkew];
 
-	SimpleCorrelationExtractor corrExtractor = SimpleCorrelationExtractor(this, p);
+	MCCorrelationExtractor corrExtractor = MCCorrelationExtractor(this, p);
 
 #ifdef STAMPA_PREZZI_BASKET
 	ofstream miofile;

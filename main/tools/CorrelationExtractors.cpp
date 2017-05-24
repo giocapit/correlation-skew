@@ -27,3 +27,14 @@ double MCCorrelationExtractor::extract(double sigmaBSComponent1, double sigmaBSC
 
 }
 
+
+double ThirdMomentCorrelationExtractor::extract(double sigmaBSComponent1, double sigmaBSComponent2, double optionPrice, double strike, double riskFreeRate, double T)
+{
+	BasketOption option = BasketOption(T, basket, strike, BasketOption::call);
+	GeneralizedBSBasketOptionPricer pricerBS = GeneralizedBSBasketOptionPricer(&option, procBS, riskFreeRate);
+	procBS->setSigma1(sigmaBSComponent1);
+	procBS->setSigma2(sigmaBSComponent2);
+	FunctionalForCorrelationSkewCalculationBis f = FunctionalForCorrelationSkewCalculationBis(procBS, &pricerBS, optionPrice);
+	double rho = froot(&f,-1,1);
+	return rho;
+}

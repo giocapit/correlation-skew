@@ -70,7 +70,7 @@ operator()(const std::vector<double> & x) const
 	double dM3_ds = 3 * pow(tau,2) * s * exp(m + 0.5 * pow(s,2)) + 
 		12 * tau * s * exp(2 * m + 2 * pow(s,2)) + 
 		9 * s * exp(3 * m + 4.5 * pow(s,2));
-	printf("diagonal : % .5e  %.5e  %.5e\n",dM1_dtau,dM2_dm, dM3_ds);
+	//printf("diagonal : % .5e  %.5e  %.5e\n",dM1_dtau,dM2_dm, dM3_ds);
 	std::vector<double> y = {dM1_dtau,
 		dM2_dtau,
 		dM3_dtau,
@@ -118,11 +118,11 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 	double tau = x[0];
 	double m = x[1];
 	double sigma = x[2];
-	printf("% .5e  %.5e  %.5e\n",tau, m, sigma);
+	//printf("% .5e  %.5e  %.5e\n",tau, m, sigma);
 
 	LogNormalDistribution* psi = new LogNormalDistribution(tau, m, sigma);
 
-	printf("% .5e  %.5e  %.5e\n",psi->M1(), psi->M2(), psi->M3());
+	//printf("% .5e  %.5e  %.5e\n",psi->M1(), psi->M2(), psi->M3());
 	double T = opzione->getExpiry();
 	BSPricer pricer(psi);
 	double price = pricer.bsformula(riskFreeRate, T, strike);
