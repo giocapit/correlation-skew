@@ -29,6 +29,7 @@ include(main/pricerEngines/CMakeLists.txt)
 include(main/termStructures/CMakeLists.txt)
 include(main/processi/CMakeLists.txt)
 include(main/interfaces/CMakeLists.txt)
+include(main/solvers/CMakeLists.txt)
 include(main/CMakeLists.txt)
 include(test/CMakeLists.txt)
 

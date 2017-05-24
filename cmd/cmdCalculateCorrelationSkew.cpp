@@ -16,7 +16,7 @@ int main (int argc,char* argv[])
 		std::cin.get();
 		exit(0);
 	} else { // if we got enough parameters...
-		double Multiplier=100;
+		double Multiplier=1;
 		double riskFree=0.03;
 		double lambda1 =0.3;
 		double J1 =0.4;
@@ -77,6 +77,7 @@ int main (int argc,char* argv[])
 		//srand (time(NULL));
 		// Dichiarazioni variabili
 		//
+		unsigned long start = clock();
 		calculateCorrelationSkewJumpDiffusion(
 				// dati di mercato
 				//
@@ -97,6 +98,8 @@ int main (int argc,char* argv[])
 				result,
 				Nsim
 		);
+		double elapsed = ((double)(clock() - start))/(double) CLOCKS_PER_SEC;
+		printf("Elapsed time is: % .15f\n", elapsed);
 		ofstream miofile;
 		//miofile.open("C:\\Users\\Giovanni\\Dropbox\\mip\\project_work\\Dati_e_eseguibili\\risultatiSalti.csv"/*,std::ios_base::app*/);
 		miofile.open("/home/giovanni/projects/correlation-skew/build/risultatiSalti.csv"/*,std::ios_base::app*/);
