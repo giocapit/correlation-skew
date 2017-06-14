@@ -7,6 +7,7 @@ struct rparams
 {
 	MultiFunctional* fun;
 	MultiFunctional* dfun;
+	std::vector<std::vector<double>> constraints;
 };
 
 int call_f (const gsl_vector * x, void *params,
@@ -30,6 +31,39 @@ int call_f (const gsl_vector * x, void *params,
 	return GSL_SUCCESS;
 }
 
+int call_f_constraints (const gsl_vector * x, void *params,
+		gsl_vector * f)
+{
+	double x1 = gsl_vector_get (x, 0);
+	double x2 = gsl_vector_get (x, 1);
+	double x3 = gsl_vector_get (x, 2);
+
+	double x1_min = ((rparams* )params)->constraints[0][0]; 
+	double x1_max = ((rparams* )params)->constraints[0][1]; 
+	double x2_min = ((rparams* )params)->constraints[1][0]; 
+	double x2_max = ((rparams* )params)->constraints[1][1]; 
+	double x3_min = ((rparams* )params)->constraints[2][0]; 
+	double x3_max = ((rparams* )params)->constraints[2][1]; 
+	double X1 = (x1_min + x1_max)/2 + tan(x1) * (x1_max - x1_min)/2;
+	double X2 = (x2_min + x2_max)/2 + tan(x2) * (x2_max - x2_min)/2;
+	double X3 = (x3_min + x3_max)/2 + tan(x3) * (x3_max - x3_min)/2;
+	const std::vector<double> v = {
+		X1,
+		X2,
+		X3
+	};
+
+	MultiFunctional* fun = ((struct rparams *) params)->fun;
+
+	const std::vector<double> y = (*fun)(v);
+
+
+	gsl_vector_set (f, 0, y[0]);
+	gsl_vector_set (f, 1, y[1]);
+	gsl_vector_set (f, 2, y[2]);
+
+	return GSL_SUCCESS;
+}
 int call_df (const gsl_vector * x, void *params,
 		gsl_matrix * J)
 {
@@ -70,7 +104,7 @@ int call_fdf (const gsl_vector * x, void *params,
 	int
 EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 {
-	printf ("iter = %3u x = % .5e % .5e % .5e"
+	printf ("iter = %3u x = % .8f % .8f % .8f"
 			"f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
@@ -85,7 +119,7 @@ EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 	int
 EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 {
-	printf ("iter = %3u x = % .5f % .5f % .5f"
+	printf ("iter = %3u x = % .8f % .8f % .8f"
 			"f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
@@ -127,12 +161,16 @@ EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 	return 0;
 }
 
-EqSystemSolver::EqSystemSolver(MultiFunctional * f, std::vector<double> x_init)
+EqSystemSolver::EqSystemSolver(MultiFunctional * fun, std::vector<double> x_init, std::vector<std::vector<double>> constraints)
 {
-	this->fun = f;
+	this->fun = fun;
 	this->x_init = x_init;
 	sol = std::vector<double>(3,0);
-
+	const size_t n = x_init.size();
+	this->constraints = constraints;
+	
+	struct rparams p = {fun, NULL, constraints};
+	f = {&call_f, n, &p};
 };
 
 EqSystemSolver::EqSystemSolver(MultiFunctional * f, MultiFunctional * df, std::vector<double> x_init)
@@ -159,9 +197,7 @@ int EqSystemSolver::solve (void)
 	int status;
 	size_t i, iter = 0;
 
-	const size_t n = 3;
-	struct rparams p = {fun};
-	gsl_multiroot_function f = {&call_f, n, &p};
+	const size_t n = x_init.size();
 
 	gsl_vector *x = gsl_vector_alloc (n);
 

@@ -12,14 +12,15 @@ class EqSystemSolver{
 		MultiFunctional *dfun;
 		std::vector<double> x_init;
 		std::vector<double> sol;
-
+		gsl_multiroot_function f;
+		std::vector<std::vector<double>> constraints;
 
 
 		int print_state (size_t iter, gsl_multiroot_fsolver * s);
 		int print_state_df (size_t iter, gsl_multiroot_fdfsolver * s);
 
 	public:
-		EqSystemSolver(MultiFunctional * f, std::vector<double> x_init);
+		EqSystemSolver(MultiFunctional * fun, std::vector<double> x_init, std::vector<std::vector<double>> constraints);
 
 		EqSystemSolver(MultiFunctional * f, MultiFunctional * df, std::vector<double> x_init);
 

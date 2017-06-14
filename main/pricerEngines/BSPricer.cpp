@@ -7,7 +7,7 @@ BSPricer::BSPricer(LogNormalDistribution * phi)
 	this->phi = phi;
 }
 
-double BSPricer::bsformula(double r, double T, double strike)
+double BSPricer::bsformula(double r, double T, double strike, double multiplier)
 {
 
 
@@ -22,6 +22,7 @@ double BSPricer::bsformula(double r, double T, double strike)
 
 	CumulativeNormalDistribution N(0, 1);
 
-	return exp(-r * T) * ((M_1 - tau) * N(d1) - (strike - tau) * N(d2));
+	return multiplier * exp(-r * T) * 
+				((M_1 - tau) * N(d1) - (strike - tau) * N(d2));
 
 };

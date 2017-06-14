@@ -17,4 +17,6 @@ class LognormalSumDistribution
 		double M2();
 
 		double M3();
+
+		double M4();
 };

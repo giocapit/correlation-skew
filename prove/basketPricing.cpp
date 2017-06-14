@@ -15,12 +15,12 @@ int main()
 	double multiplier = 100;
 	double w1 = 0.5;
 	double w2 = 0.5;
-	double strike = 1;
-	double sigma1 = 0.3;
-	double sigma2 = 0.15;
-	double rho = 0.5;
+	double strike = 0.71;
+	double sigma1 = 0.54840736389160161;
+	double sigma2 = 0.95709053039550773;
+	double rho = -0.29036712;
 	double expiry = 1;
-	double riskFreeRate = 0.02;
+	double riskFreeRate = 0.03;
 	Option::type cp = Option::call;
 
 
@@ -52,8 +52,9 @@ int main()
 	double M1 = phi.M1();
 	double M2 = phi.M2();
 	double M3 = phi.M3();
+	double M4 = phi.M4();
 	
-	cout << M1 << "	" << M2 << "	" << M3 << "\n";
+	cout << M1 << "	" << M2 << "	" << M3 << "  " << M4 <<"\n";
 
 	cout << mcprice << endl
 		<< bsprice << endl

@@ -16,7 +16,7 @@ int main (int argc,char* argv[])
 		std::cin.get();
 		exit(0);
 	} else { // if we got enough parameters...
-		double Multiplier=1;
+		double Multiplier=100;
 		double riskFree=0.03;
 		double lambda1 =0.3;
 		double J1 =0.4;

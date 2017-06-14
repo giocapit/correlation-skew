@@ -8,7 +8,7 @@ class BSPricer : public OptionPricerClosedFormula
 		LogNormalDistribution * phi;
 	public:
 		BSPricer(LogNormalDistribution * phi);
-		double bsformula(double r, double T, double strike);
-		double getOptionPrice(){};
+		double bsformula(double r, double T, double strike, double multiplier = 1);
+		double getOptionPrice(){return 0.0;};
 
 };	
