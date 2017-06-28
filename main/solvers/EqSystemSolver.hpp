@@ -1,6 +1,7 @@
 #ifndef EqSystemSolver_hpp
 #define EqSystemSolver_hpp
 #include "Functional.hpp"
+#include "Constraints.hpp"
 #include <vector>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multiroots.h>
@@ -20,7 +21,7 @@ class EqSystemSolver{
 		int print_state_df (size_t iter, gsl_multiroot_fdfsolver * s);
 
 	public:
-		EqSystemSolver(MultiFunctional * fun, std::vector<double> x_init, std::vector<std::vector<double>> constraints);
+		EqSystemSolver(MultiFunctional * fun, std::vector<double> x_init, Constraints * constraints = NULL);
 
 		EqSystemSolver(MultiFunctional * f, MultiFunctional * df, std::vector<double> x_init);
 

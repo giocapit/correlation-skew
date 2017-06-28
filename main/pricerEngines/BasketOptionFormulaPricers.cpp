@@ -8,6 +8,7 @@
 #include "LeastSquareSolver.hpp"
 #include "NormalDistribution.hpp"
 #include "BSPricer.hpp"
+#include "Constraints.hpp"
 #include <cmath>
 #include <algorithm>
 
@@ -139,14 +140,18 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 			+ 2*rho*w1*w2*sigma1*sigma2);
 
 	std::vector<double> x0 = {0, riskFreeRate - 0.5 * pow(basketSigma,2), basketSigma};
-
-//	EqSystemSolver solver(new Functional4MomentsCalculation2(M1,M2,M3,M4),
+	std::vector<int> index = {0}; 
+	std::vector<double> upperBound = {-0.01};
+        std::vector<double> lowerBound = {0.3};
+	Constraints constraints({0}, {-0.01}, {0.3});
+	EqSystemSolver solver(new Functional4MomentsCalculation(M1,M2,M3),
+				//new Jacobian4MomentsCalculation(), 
+				x0, 
+				&constraints);
+	
+//	LeastSquaresSolver solver(new Functional4MomentsCalculation3(M1,M2,M3,M4),
 //			//	new Jacobian4MomentsCalculation(), 
 //				x0);
-	
-	LeastSquaresSolver solver(new Functional4MomentsCalculation3(M1,M2,M3,M4),
-			//	new Jacobian4MomentsCalculation(), 
-				x0);
 	solver.solve();
 
 	std::vector<double> x = solver.getSol();
