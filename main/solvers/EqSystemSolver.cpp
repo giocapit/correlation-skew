@@ -45,7 +45,8 @@ int call_f_constraints (const gsl_vector * x, void *params,
 		x2,
 		x3
 	});
-
+	printf("original variable value is x1: % .6f x2: % .6f x3: % .6f\n", x1, x2, x3);
+	printf("updated variable value is x1: % .6f x2: % .6f x3: % .6f\n", v[0], v[1], v[2]);
 	MultiFunctional* fun = ((struct rparams *) params)->fun;
 
 	const std::vector<double> y = (*fun)(v);
@@ -99,7 +100,7 @@ int call_fdf (const gsl_vector * x, void *params,
 EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 {
 	printf ("iter = %3u x = % .8f % .8f % .8f"
-			"f(x) = % .3e % .3e % .3e\n",
+			" f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
 			gsl_vector_get (s->x, 1),
@@ -114,7 +115,7 @@ EqSystemSolver::print_state (size_t iter, gsl_multiroot_fsolver * s)
 EqSystemSolver::print_state_df (size_t iter, gsl_multiroot_fdfsolver * s)
 {
 	printf ("iter = %3u x = % .8f % .8f % .8f"
-			"f(x) = % .3e % .3e % .3e\n",
+			" f(x) = % .3e % .3e % .3e\n",
 			iter,
 			gsl_vector_get (s->x, 0),
 			gsl_vector_get (s->x, 1),
@@ -218,8 +219,7 @@ int EqSystemSolver::solve (void)
 	{
 		iter++;
 		status = gsl_multiroot_fsolver_iterate (s);
-
-		print_state (iter, s);
+ 		print_state (iter, s);
 
 		if (status)   /* check if solver is stuck */
 			break;
@@ -230,6 +230,14 @@ int EqSystemSolver::solve (void)
 	while (status == GSL_CONTINUE && iter < 1000);
 
 	printf ("status = %s\n", gsl_strerror (status));
+		double x1 = gsl_vector_get (s->x, 0);
+		double x2 = gsl_vector_get (s->x, 1);
+		double x3 = gsl_vector_get (s->x, 2);
+		std::vector<double> v = ((rparams *)(f.params))->constraints->update({x1,x2,x3});
+
+		gsl_vector_set (s->x, 0, v[0]);
+		gsl_vector_set (s->x, 1, v[1]);
+		gsl_vector_set (s->x, 2, v[2]);
 	for (int i=0; i < n; i++)
 	{
 		sol[i]=gsl_vector_get(s->x,i);

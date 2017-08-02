@@ -34,16 +34,18 @@ int main()
 	NormalDistributionAntitetica* N2 = new NormalDistributionAntitetica();
 
 	ProcessBiVariateLognormal process = ProcessBiVariateLognormal(sigma1,sigma2,rho, nSim, N1, N2);
-	cout << process.getSigma1();
-	cout << process.getSigma2();
+	//cout << process.getSigma1();
+	//cout << process.getSigma2();
 	MCOptionPricer montecarlopricer = MCOptionPricer(&opzione,
 			&process,
 			riskFreeRate ,
 			nSim);
 	BSBasketOptionPricer bsoptionpricer = BSBasketOptionPricer(& opzione, &process, riskFreeRate); 
+	BSBasketOptionPricer1 bsoptionpricer1 = BSBasketOptionPricer1(& opzione, &process, riskFreeRate); 
 	GeneralizedBSBasketOptionPricer genbsoptionpricer = GeneralizedBSBasketOptionPricer(& opzione, &process, riskFreeRate);
 	double mcprice = montecarlopricer.getOptionPrice();
 	double bsprice = bsoptionpricer.getOptionPrice();
+	double bsprice1 = bsoptionpricer1.getOptionPrice();
 	double genbsprice = genbsoptionpricer.getOptionPrice();
 	
 	
@@ -58,6 +60,7 @@ int main()
 
 	cout << mcprice << endl
 		<< bsprice << endl
+		<< bsprice1 << endl
 		<< genbsprice << endl;
 
 	return 0;

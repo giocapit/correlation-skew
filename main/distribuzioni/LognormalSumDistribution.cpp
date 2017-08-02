@@ -41,3 +41,12 @@ double LognormalSumDistribution::M4()
             pow(w2,4) * exp(4 * r + 6 * pow(sigma2,2));
 }
 
+double LognormalSumDistribution::M5()
+{
+    return pow(w1,5) * exp(5 * r + 10 * pow(sigma1,2)) +\
+            5 * pow(w1,4) * w2 * exp(5 * r + 6 * pow(sigma1,2) + 4 * sigma1 * sigma2 * rho) +\
+            10 * pow(w1,3) * pow(w2,2) * exp(5 * r + 3 * pow(sigma1,2) + pow(sigma2,2) + 6 * sigma1 * sigma2 * rho) +\
+            10 * pow(w1,2) * pow(w2,3) * exp(5 * r + pow(sigma1,2) + 3 * pow(sigma2,2) + 6 * sigma1 * sigma2 * rho) +\
+            5 * pow(w2,4) * w1 * exp(5 * r + 6 * pow(sigma2,2) + 4 * sigma1 * sigma2 * rho) +\
+            pow(w2,5) * exp(5 * r + 10 * pow(sigma2,2));
+}

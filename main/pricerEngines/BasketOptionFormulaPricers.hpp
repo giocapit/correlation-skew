@@ -15,6 +15,16 @@ class BSBasketOptionPricer: public OptionPricer
 		double getOptionPrice();
 };
 
+class BSBasketOptionPricer1: public OptionPricer
+{
+	public:
+		BSBasketOptionPricer1(const BasketOption *option, Process *process, double riskFreeRate): OptionPricer(option, process, riskFreeRate){};
+
+		~BSBasketOptionPricer1(){};
+
+		double getOptionPrice();
+};
+
 class GeneralizedBSBasketOptionPricer: public OptionPricer
 {
 	public:
@@ -91,6 +101,29 @@ class GeneralizedBSBasketOptionPricer: public OptionPricer
 
 	};
 
+		class Functional4MomentsCalculation5thMoment : public MultiFunctional
+	{
+		private:
+			double phiM1;
+			double phiM2;
+			double phiM3;
+			double phiM4;
+			double phiM5;
+
+
+		public:
+			Functional4MomentsCalculation5thMoment(double phiM1, double phiM2, double phiM3, double phiM4, double phiM5):MultiFunctional()
+		{
+			this->phiM1 = phiM1;
+			this->phiM2 = phiM2;
+			this->phiM3 = phiM3;
+			this->phiM4 = phiM4;
+			this->phiM5 = phiM5;
+			this->dim_y = 5;
+		}
+			std::vector<double> operator()(const std::vector<double> & x) const;
+
+	};
 };
 
 #endif

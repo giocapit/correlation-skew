@@ -39,7 +39,7 @@ void print_nls_status (const size_t iter, void * params, const gsl_multifit_nlin
 {
 
 	printf ("iter = %3u x = % .8f % .8f % .8f "
-			"f(x) = % .5e % .5e % .5e % .5e\n",
+			"f(x) = % .5e % .5e % .5e % .5e % .5e\n",
 			iter,
 			gsl_vector_get (w->x, 0),
 			gsl_vector_get (w->x, 1),
@@ -47,7 +47,9 @@ void print_nls_status (const size_t iter, void * params, const gsl_multifit_nlin
 			gsl_vector_get (w->f, 0),
 			gsl_vector_get (w->f, 1),
 			gsl_vector_get (w->f, 2),
-			gsl_vector_get (w->f, 3));
+			gsl_vector_get (w->f, 3),
+			gsl_vector_get (w->f, 4)
+			);
 
 	for (int i=0; i<4; i++)
 	{
@@ -59,6 +61,12 @@ void print_nls_status (const size_t iter, void * params, const gsl_multifit_nlin
 	      );
 
 	}
+	
+	printf ("gradient = % .5e % .5e % .5e \n",
+			gsl_vector_get (w->g, 0),
+			gsl_vector_get (w->g, 1),
+			gsl_vector_get (w->g, 2)
+			);
 }
 
 LeastSquaresSolver::LeastSquaresSolver(MultiFunctional * f, std::vector<double> x_init)
@@ -115,6 +123,7 @@ int LeastSquaresSolver::solve(void)
  	res_f = gsl_multifit_nlinear_residual(w);
   	chi0 = gsl_blas_dnrm2(res_f);
 
+	print_nls_status (iter,&pars, w);
 	//risoluzione delsistema
 	//status = gsl_multifit_nlinear_driver(200, xtol, gtol, ftol, &print_nls_status, NULL,  &info, w);
 	do
@@ -126,7 +135,10 @@ int LeastSquaresSolver::solve(void)
 		print_nls_status (iter,&pars, w);
 
 		if (status)
+		{
+			printf("unexpected exit from iteration\n");
 			break;
+		}
 
 		status = gsl_multifit_nlinear_test (xtol, gtol, ftol, &info, w);
 	}

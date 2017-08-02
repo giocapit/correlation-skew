@@ -34,7 +34,33 @@ double BSBasketOptionPricer::getOptionPrice()
 			1);
 	return price;
 
+};
 
+double BSBasketOptionPricer1::getOptionPrice()
+{
+
+	Basket* underlyingBasket = (Basket*)(((BasketOption*) opzione)->getUnderlying());
+	double sigma1 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma1();
+	double sigma2 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma2();
+	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
+	double w1 = underlyingBasket->get_w1();
+	double w2 = underlyingBasket->get_w2();
+
+	LognormalSumDistribution phi(riskFreeRate, w1, w2, rho, sigma1, sigma2);
+	
+	double M2 = phi.M2();
+	
+	double squareBasketSigma = (2 * log(M2) - riskFreeRate)/3;
+	double basketSigma = sqrt(squareBasketSigma);
+
+	double price = bsprice(underlyingBasket->getMultiplier(),
+			opzione->getStrike() * underlyingBasket->getMultiplier(),
+			riskFreeRate,
+			opzione->getExpiry(),
+			basketSigma,
+			0,
+			1);
+	return price;
 
 };
 
@@ -84,6 +110,29 @@ operator()(const std::vector<double> & x) const
 	std::vector<double> y = {y1, y2, y3, y4};
 	return y;
 };
+
+std::vector<double> GeneralizedBSBasketOptionPricer::Functional4MomentsCalculation5thMoment::
+operator()(const std::vector<double> & x) const
+{
+	double y1 = (LogNormalDistribution::M1(x[0], x[1], x[2]) - phiM1)*100000;
+	double y2 = (LogNormalDistribution::M2(x[0], x[1], x[2]) - phiM2)*10000;
+	double y3 = (LogNormalDistribution::M3(x[0], x[1], x[2]) - phiM3)*1000;
+	double y4 = (LogNormalDistribution::M4(x[0], x[1], x[2]) - phiM4);
+	double y5 = (LogNormalDistribution::M5(x[0], x[1], x[2]) - phiM5);
+
+//	printf("x0 is % .5e\n", x[0]);
+//	printf("x1 is % .5e\n", x[1]);
+//	printf("x2 is % .5e\n", x[2]);
+//	
+//	printf("y0 is % .5e\n", y1);
+//	printf("y1 is % .5e\n", y2);
+//	printf("y2 is % .5e\n", y3);
+//	printf("y3 is % .5e\n", y4);
+//	printf("y4 is % .5e\n", y4);
+	std::vector<double> y = {y1, y2, y3, y4, y5};
+	return y;
+};
+
 std::vector<double> GeneralizedBSBasketOptionPricer::Jacobian4MomentsCalculation::
 operator()(const std::vector<double> & x) const
 {
@@ -134,7 +183,8 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 	double M2 = phi.M2();
 	double M3 = phi.M3();
 	double M4 = phi.M4();
-	printf("the moments of the lognormal sum are : % .5e  %.5e %.5e %.5e\n", M1, M2, M3, M4);
+	double M5 = phi.M5();
+	printf("the moments of the lognormal sum are : % .5f  %.5f %.5f %.5f %.5f\n", M1, M2, M3, M4, M5);
 	double basketSigma = sqrt(pow(w1 * sigma1,2) 
 			+ pow(w2 * sigma2,2) 
 			+ 2*rho*w1*w2*sigma1*sigma2);
@@ -144,14 +194,14 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 	std::vector<double> upperBound = {-0.01};
         std::vector<double> lowerBound = {0.3};
 	Constraints constraints({0}, {-0.01}, {0.3});
-	EqSystemSolver solver(new Functional4MomentsCalculation(M1,M2,M3),
-				//new Jacobian4MomentsCalculation(), 
-				x0, 
-				&constraints);
+//	EqSystemSolver solver(new Functional4MomentsCalculation(M1,M2,M3),
+//				//new Jacobian4MomentsCalculation(), 
+//				x0, 
+//				&constraints);
 	
-//	LeastSquaresSolver solver(new Functional4MomentsCalculation3(M1,M2,M3,M4),
-//			//	new Jacobian4MomentsCalculation(), 
-//				x0);
+	LeastSquaresSolver solver(new Functional4MomentsCalculation5thMoment(M1,M2,M3,M4,M5),
+			//	new Jacobian4MomentsCalculation(), 
+				x0);
 	solver.solve();
 
 	std::vector<double> x = solver.getSol();
@@ -166,7 +216,7 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 
 	LogNormalDistribution* psi = new LogNormalDistribution(tau, m, sigma);
 
-	printf("% .5f  %.5f  %.5f %.5f\n",psi->M1(), psi->M2(), psi->M3(), psi->M4());
+	printf("the moments of the approximating lognormal distribution are: %.5f  %.5f  %.5f %.5f %.5f\n",psi->M1(), psi->M2(), psi->M3(), psi->M4(), psi->M5());
 	double T = opzione->getExpiry();
 	BSPricer pricer(psi);
 	double price = pricer.bsformula(riskFreeRate, T, strike, multiplier);
