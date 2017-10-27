@@ -7,13 +7,13 @@ class OptionPricer
 {
 	protected:
 		double riskFreeRate;
-		const Option *opzione;
+		const Option *option;
 		Process *processo;
 	public:
 		OptionPricer();
-		OptionPricer(const Option *opzione_, Process *processo_, double riskFreeRate_)
+		OptionPricer(const Option *option_, Process *processo_, double riskFreeRate_)
 		{
-			opzione = opzione_;
+			option = option_;
 			processo = processo_;
 			riskFreeRate = riskFreeRate_;
 		};

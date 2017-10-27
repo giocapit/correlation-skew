@@ -3,8 +3,6 @@
 #include <cmath>
 #include <cstdlib>
 
-#ifndef DIST_NORM_CPP
-#define DIST_NORM_CPP
 
 NormalDistribution::NormalDistribution(double mu_, double sigma_){
 	mu = mu_;
@@ -36,6 +34,11 @@ double NormalDistribution::getNormalByBoxMuller() const
 
 }
 
+double NormalDistribution::pdf(double x)
+{
+	return
+	exp(-pow(x - this->mu, 2)/(2*pow(sigma,2))) / (sqrt(2 * M_PI)*sigma);
+}
 
 
 CumulativeNormalDistribution::CumulativeNormalDistribution(double mu, double sigma){
@@ -90,4 +93,3 @@ double NormalDistributionAntitetica::operator ()()
 
 }
 
-#endif

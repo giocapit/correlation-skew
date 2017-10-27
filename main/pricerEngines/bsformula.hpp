@@ -1,3 +1,5 @@
+#ifndef bs_formula_hpp
+#define  bs_formula_hpp
 double blackD1(double S0,
 		double K,
 		double r,
@@ -20,3 +22,4 @@ double bsprice(double S0,
 		double q,
 		int cp);
 
+#endif

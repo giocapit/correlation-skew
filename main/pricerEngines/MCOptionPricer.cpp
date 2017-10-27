@@ -12,16 +12,16 @@ double MCOptionPricer::getOptionPrice()
 {
 	double prezzoIesimo;
 	double mioPayoff;
-	double T = opzione->getExpiry();
+	double T = option->getExpiry();
 	for (int i = 0; i < N; i++)
 	{
 		processo->generaCammino(T);
 		
-		prezzoIesimo = processo->getAssetEvaluation(opzione->getUnderlying(), 
+		prezzoIesimo = processo->getAssetEvaluation(option->getUnderlying(), 
 							riskFreeRate,
 							T);
 		processo->increaseContatore();
-		mioPayoff = opzione->payoff(prezzoIesimo);
+		mioPayoff = option->payoff(prezzoIesimo);
 		statistiche	->addPayoff(mioPayoff);
 	}
 
@@ -36,17 +36,17 @@ double MCOptionPricer::getOptionPriceFromAlreadyGeneratedPath() const
 	double prezzoIesimo;
 	double mioPayoff;
 	double payoffCumulato = 0;
-	double T = opzione->getExpiry();
+	double T = option->getExpiry();
 	processo->setContatore(0);
 	for (int i = 0; i < N; i++)
 	{
 
-		prezzoIesimo = processo->getAssetEvaluation(opzione->getUnderlying(),
+		prezzoIesimo = processo->getAssetEvaluation(option->getUnderlying(),
 							riskFreeRate,
 							T);
 		processo->increaseContatore();
 
-		mioPayoff = opzione->payoff(prezzoIesimo);
+		mioPayoff = option->payoff(prezzoIesimo);
 		payoffCumulato = payoffCumulato + mioPayoff;
 	}
 
@@ -58,13 +58,13 @@ double MCOptionPricer::getOptionPriceFromAlreadyGeneratedPath() const
 void MCOptionPricer::updateCumulatedPayoff(double underlyingPrice) const
 {
 	double mioPayoff;
-	mioPayoff = opzione->payoff(underlyingPrice);
+	mioPayoff = option->payoff(underlyingPrice);
 	statistiche->addPayoff(mioPayoff);
 }
 
 double MCOptionPricer::getOptionPriceFromCumulatedPayoff()
 {
-	double T = opzione->getExpiry();
+	double T = option->getExpiry();
 	double meanPayoff = statistiche->getMeanPayoff();
 	double price = meanPayoff * exp(-riskFreeRate * T);
 
@@ -77,15 +77,15 @@ double MCOptionPricer::getOptionPriceWithGsl()
 	double prezzoIesimo;
 	double mioPayoff;
 	double payoffCumulato = 0;
-	double T = opzione->getExpiry();
+	double T = option->getExpiry();
 	processo->generaCamminiOneShot(T,N);
 	for (int i = 0; i < N; i++)
 	{
-		prezzoIesimo = processo->getAssetEvaluation(opzione->getUnderlying(), 
+		prezzoIesimo = processo->getAssetEvaluation(option->getUnderlying(), 
 							riskFreeRate,
 							T);
 		processo->increaseContatore();
-		mioPayoff = opzione->payoff(prezzoIesimo);
+		mioPayoff = option->payoff(prezzoIesimo);
 		payoffCumulato = payoffCumulato + mioPayoff;
 	}
 

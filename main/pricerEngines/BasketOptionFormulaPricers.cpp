@@ -15,7 +15,7 @@
 double BSBasketOptionPricer::getOptionPrice()
 {
 
-	Basket* underlyingBasket = (Basket*)(((BasketOption*) opzione)->getUnderlying());
+	Basket* underlyingBasket = (Basket*)(((BasketOption*) option)->getUnderlying());
 	double sigma1 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma1();
 	double sigma2 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma2();
 	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
@@ -26,9 +26,9 @@ double BSBasketOptionPricer::getOptionPrice()
 			+ 2*rho*w1*w2*sigma1*sigma2);
 
 	double price = bsprice(underlyingBasket->getMultiplier(),
-			opzione->getStrike() * underlyingBasket->getMultiplier(),
+			option->getStrike() * underlyingBasket->getMultiplier(),
 			riskFreeRate,
-			opzione->getExpiry(),
+			option->getExpiry(),
 			basketSigma,
 			0,
 			1);
@@ -39,7 +39,7 @@ double BSBasketOptionPricer::getOptionPrice()
 double BSBasketOptionPricer1::getOptionPrice()
 {
 
-	Basket* underlyingBasket = (Basket*)(((BasketOption*) opzione)->getUnderlying());
+	Basket* underlyingBasket = (Basket*)(((BasketOption*) option)->getUnderlying());
 	double sigma1 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma1();
 	double sigma2 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma2();
 	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
@@ -54,9 +54,9 @@ double BSBasketOptionPricer1::getOptionPrice()
 	double basketSigma = sqrt(squareBasketSigma);
 
 	double price = bsprice(underlyingBasket->getMultiplier(),
-			opzione->getStrike() * underlyingBasket->getMultiplier(),
+			option->getStrike() * underlyingBasket->getMultiplier(),
 			riskFreeRate,
-			opzione->getExpiry(),
+			option->getExpiry(),
 			basketSigma,
 			0,
 			1);
@@ -170,7 +170,7 @@ operator()(const std::vector<double> & x) const
 
 double GeneralizedBSBasketOptionPricer::getOptionPrice()
 {
-	Basket* underlyingBasket = (Basket*)(((BasketOption*) opzione)->getUnderlying());
+	Basket* underlyingBasket = (Basket*)(((BasketOption*) option)->getUnderlying());
 	double sigma1 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma1();
 	double sigma2 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma2();
 	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
@@ -206,7 +206,7 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 
 	std::vector<double> x = solver.getSol();
 
-	double strike = opzione->getStrike();
+	double strike = option->getStrike();
 	double multiplier = underlyingBasket -> getMultiplier();
 
 	double tau = x[0];
@@ -217,7 +217,7 @@ double GeneralizedBSBasketOptionPricer::getOptionPrice()
 	LogNormalDistribution* psi = new LogNormalDistribution(tau, m, sigma);
 
 	printf("the moments of the approximating lognormal distribution are: %.5f  %.5f  %.5f %.5f %.5f\n",psi->M1(), psi->M2(), psi->M3(), psi->M4(), psi->M5());
-	double T = opzione->getExpiry();
+	double T = option->getExpiry();
 	BSPricer pricer(psi);
 	double price = pricer.bsformula(riskFreeRate, T, strike, multiplier);
 /*

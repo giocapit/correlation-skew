@@ -11,7 +11,10 @@ class LogNormalDistribution
 		double s;
 
 	public:
+		LogNormalDistribution(){};
 		LogNormalDistribution(double tau, double m, double s);
+		double pdf(double x) const;
+
 		void setParams(double tau, double m, double s);
 
 		double M1() const;

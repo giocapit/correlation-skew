@@ -1,3 +1,5 @@
+#ifndef BS_PRICER_HPP
+#define BS_PRICER_HPP
 #include "LognormalDistribution.hpp"
 #include "OptionPricerClosedFormula.hpp"
 
@@ -12,3 +14,4 @@ class BSPricer : public OptionPricerClosedFormula
 		double getOptionPrice(){return 0.0;};
 
 };	
+#endif

@@ -1,4 +1,5 @@
 #include "BasketOptionFormulaPricers.hpp"
+#include "CurranBasketOptionPricer.hpp"
 #include "MCOptionPricer.hpp"
 #include "Equity.hpp"
 #include "BasketOption.hpp"
@@ -41,11 +42,11 @@ int main()
 			riskFreeRate ,
 			nSim);
 	BSBasketOptionPricer bsoptionpricer = BSBasketOptionPricer(& opzione, &process, riskFreeRate); 
-	BSBasketOptionPricer1 bsoptionpricer1 = BSBasketOptionPricer1(& opzione, &process, riskFreeRate); 
+	CurranBasketOptionPricer curranoptionpricer = CurranBasketOptionPricer(& opzione, &process, riskFreeRate); 
 	GeneralizedBSBasketOptionPricer genbsoptionpricer = GeneralizedBSBasketOptionPricer(& opzione, &process, riskFreeRate);
 	double mcprice = montecarlopricer.getOptionPrice();
 	double bsprice = bsoptionpricer.getOptionPrice();
-	double bsprice1 = bsoptionpricer1.getOptionPrice();
+	double curranprice = curranoptionpricer.getOptionPrice();
 	double genbsprice = genbsoptionpricer.getOptionPrice();
 	
 	
@@ -60,7 +61,7 @@ int main()
 
 	cout << mcprice << endl
 		<< bsprice << endl
-		<< bsprice1 << endl
+		<< curranprice << endl
 		<< genbsprice << endl;
 
 	return 0;

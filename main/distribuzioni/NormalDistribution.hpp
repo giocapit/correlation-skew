@@ -11,7 +11,8 @@ class NormalDistribution
 		virtual ~NormalDistribution(){};
 
 		virtual double operator()();
-		double getNormalByBoxMuller() const; 
+		double getNormalByBoxMuller() const;
+		double pdf(double x);	
 
 };
 

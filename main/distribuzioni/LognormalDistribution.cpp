@@ -10,6 +10,13 @@ LogNormalDistribution::LogNormalDistribution(double tau, double m,double s)
 	this->s=s;
 };
 
+double LogNormalDistribution::pdf(double x) const
+{
+
+        double y = (1 / (s * (x - tau) * sqrt(2 * M_PI))) * exp(-(pow(log(x - tau) - m, 2) / (2 * pow(s,2))));
+    	return y;
+};
+
 void LogNormalDistribution::setParams(double tau, double m,double s)
 {
 
