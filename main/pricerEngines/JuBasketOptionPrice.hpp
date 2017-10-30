@@ -9,7 +9,7 @@
 class JuBasketOptionPricer: public BSBasketOptionPricer
 {
 	public:
-		JuBasketOptionPricer(const BasketOption *option, Process *process, double riskFreeRate): BSBasketOptionPricer(option, process, riskFreeRate)
+		JuBasketOptionPricer(const BasketOption *option, Process *process, double riskFreeRate);
 
 													 ~JuBasketOptionPricer(){};
 

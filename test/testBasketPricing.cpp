@@ -1,5 +1,5 @@
 #include "BasketOptionFormulaPricers.hpp"
-#include "CurranBasketOptionPricer.hpp"
+#include "JuBasketOptionPrice.hpp"
 #include "MCOptionPricer.hpp"
 #include "Equity.hpp"
 #include "BasketOption.hpp"
@@ -34,7 +34,7 @@ int main()
 {
 
 	int nSim= 1000000;
-	double multiplier = 1;
+	double multiplier = 100;
 	double w1 ;
 	double w2 ;
 	double strike ;
@@ -50,7 +50,7 @@ int main()
 	Equity equity2 = Equity(multiplier);
 	double mcprice;
 	double bsprice;
-	double curranprice;
+	double juprice;
 	string line;
 	//discard the header line
 	getline(testBook, line);
@@ -81,14 +81,15 @@ int main()
 				riskFreeRate ,
 				nSim);
 		BSBasketOptionPricer bsoptionpricer = BSBasketOptionPricer(& opzione, &process, riskFreeRate); 
-		CurranBasketOptionPricer curranoptionpricer = CurranBasketOptionPricer(& opzione, &process, riskFreeRate); 
+		JuBasketOptionPricer juoptionpricer = JuBasketOptionPricer(& opzione, &process, riskFreeRate); 
 		mcprice = montecarlopricer.getOptionPrice();
 		bsprice = bsoptionpricer.getOptionPrice();
-		curranprice = curranoptionpricer.getOptionPrice();
+		juprice = juoptionpricer.getOptionPrice();
 
 		cout << mcprice << endl
 			<< bsprice << endl
-			<< curranprice << endl;
+			<< juprice << endl
+			<< "\n" << endl;
 	}
 
 
