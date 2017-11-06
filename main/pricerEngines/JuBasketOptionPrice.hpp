@@ -2,6 +2,7 @@
 #define ju_basket_option_formula_price_hpp
 #include "OptionPricer.hpp"
 #include "BasketOption.hpp"
+#include "NbasketOption.hpp"
 #include "Functional.hpp"
 #include "LognormalDistribution.hpp"
 #include "BasketOptionFormulaPricers.hpp"
@@ -11,7 +12,9 @@ class JuBasketOptionPricer: public BSBasketOptionPricer
 	public:
 		JuBasketOptionPricer(const BasketOption *option, Process *process, double riskFreeRate);
 
-													 ~JuBasketOptionPricer(){};
+		JuBasketOptionPricer(const NbasketOption *option, Process *process, double riskFreeRate);
+		
+		~JuBasketOptionPricer(){};
 
 		double getOptionPrice();
 

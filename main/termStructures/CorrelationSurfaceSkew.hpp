@@ -1,3 +1,5 @@
+#ifndef correlation_surface_skew_hpp
+#define correlation_Surface_skew_hpp
 #include "CorrelationSurface.hpp"
 #include <vector>
 
@@ -23,3 +25,5 @@ class CorrelationSurfaceSkew: public CorrelationSurface
 
 			void setCorrelation(double corr, int i);
 };
+
+#endif
