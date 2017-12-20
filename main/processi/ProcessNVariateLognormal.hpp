@@ -7,15 +7,21 @@ class ProcessNVariateLognormal: public Process
 {
 	protected:
 		size_t basket_size;
-		vector<double> sigma;
-		vector<vector<double>> rho;
+		std::vector<double> sigma;
+		std::vector<std::vector<double>> rho;
 	public:
-		ProcessNVariateLognormal(size_t basket_size, vector<double> sigma, double rho):
-			Process();
+		ProcessNVariateLognormal(size_t basket_size, std::vector<double> sigma, double rho);
 
 
 		~ProcessNVariateLognormal(){};
+		std::vector<double> * getSigma();
+		std::vector<std::vector<double>> * getRho();
 
+		void generaCammino(double T){};
+		void generaCamminiOneShot(double T, int N){};
+		double getAssetEvaluation(const Asset *asset, 
+				double r,
+				double T) const{return 0;};
 
 };
 #endif

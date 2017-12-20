@@ -13,7 +13,7 @@ class JuBasketOptionPricer: public BSBasketOptionPricer
 		JuBasketOptionPricer(const BasketOption *option, Process *process, double riskFreeRate);
 
 		JuBasketOptionPricer(const NbasketOption *option, Process *process, double riskFreeRate);
-		
+
 		~JuBasketOptionPricer(){};
 
 		double getOptionPrice();
@@ -29,10 +29,54 @@ class JuBasketOptionPricer: public BSBasketOptionPricer
 		double rho;
 		double w1;
 		double w2;
+		std::vector<double> * sigma;
+		std::vector<vector<double>> * rhoMatrix;
+		const std::vector<double> * weights;
+
 		double multiplier;
 		double m;
 		double s;
 		double U1;
 		double U2;
+
+		struct coefficients{
+			double dU2 ;
+			double d2U2;
+			double d3U2;
+			double b1;
+			double k1;
+			double k2;
+			double q1;
+			double q2;
+			double multiplier;
+			coefficients(double multiplier);
+		};
+		coefficients coeffs;
+
+		struct coeff_for_2basket: coefficients {
+			double w1;
+			double w2;
+			double rho;
+			double sigma1;
+			double sigma2;
+			coeff_for_2basket(double multiplier,
+						double w1,
+						double w2,
+						double sigma1,
+						double sigma2,
+						double rho);
+		};
+
+		struct coeff_for_Nbasket: coefficients {
+
+			std::vector<double> * sigma;
+			std::vector<vector<double>> * rhoMatrix;
+			const std::vector<double> * weights;
+			coeff_for_Nbasket(double multiplier, 
+					std::vector<double> * sigma,
+					std::vector<vector<double>> * rhoMatrix,
+					const std::vector<double> * weights);
+		};
+
 };    
 #endif

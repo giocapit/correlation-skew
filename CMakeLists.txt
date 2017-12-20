@@ -16,6 +16,7 @@ add_executable(cmdCalculateCorrelationSkew "cmd/cmdCalculateCorrelationSkew.cpp"
 add_executable(basketPricing "prove/basketPricing.cpp")
 add_executable(testBSPricer "test/testBSPricer.cpp")
 add_executable(testBasketPricing "test/testBasketPricing.cpp")
+add_executable(testJuBasketPricing "test/testJuBasketPricing.cpp")
 
 #add the library
 add_library(CorrSkewLib SHARED ${CORR_SKEW_FILES})
@@ -24,6 +25,7 @@ target_link_libraries(CorrSkewLib m gsl gslcblas)
 target_link_libraries(basketPricing CorrSkewLib)
 target_link_libraries(testBSPricer CorrSkewLib)
 target_link_libraries(testBasketPricing CorrSkewLib)
+target_link_libraries(testJuBasketPricing CorrSkewLib)
 
 include(main/distribuzioni/CMakeLists.txt)
 include(main/tools/CMakeLists.txt)

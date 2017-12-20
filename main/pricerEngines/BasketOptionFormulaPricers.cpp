@@ -2,6 +2,7 @@
 #include "bsformula.hpp"
 #include "Basket.hpp"
 #include "ProcessBiVariateLognormalAbstract.hpp"
+#include "ProcessNVariateLognormal.hpp"
 #include "LognormalSumDistribution.hpp"
 #include "Functional.hpp"
 #include "EqSystemSolver.hpp"
@@ -12,21 +13,49 @@
 #include <cmath>
 #include <algorithm>
 
-double BSBasketOptionPricer::getOptionPrice()
+BSBasketOptionPricer::BSBasketOptionPricer(const Option *opzione, Process *processo, double riskFreeRate): OptionPricer(opzione, processo, riskFreeRate)
 {
 
 	Basket* underlyingBasket = (Basket*)(((BasketOption*) option)->getUnderlying());
+	basketMultiplier = underlyingBasket->getMultiplier();
 	double sigma1 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma1();
 	double sigma2 = ((ProcessBiVariateLognormalAbstract*) processo)->getSigma2();
 	double rho = ((ProcessBiVariateLognormalAbstract*) processo)->getRho();
 	double w1 = underlyingBasket->get_w1();
 	double w2 = underlyingBasket->get_w2();
-	double basketSigma = sqrt(pow(w1 * sigma1,2) 
+
+	basketSigma = sqrt(pow(w1 * sigma1,2) 
 			+ pow(w2 * sigma2,2) 
 			+ 2*rho*w1*w2*sigma1*sigma2);
+};
 
-	double price = bsprice(underlyingBasket->getMultiplier(),
-			option->getStrike() * underlyingBasket->getMultiplier(),
+BSBasketOptionPricer::BSBasketOptionPricer(const NbasketOption *opzione, Process *processo, double riskFreeRate): OptionPricer(opzione, processo, riskFreeRate)
+{
+	Nbasket* underlyingBasket =dynamic_cast<Nbasket*>(option->getUnderlying());
+	basketMultiplier = underlyingBasket->getMultiplier();
+	std::vector<double>* sigma = 
+		dynamic_cast<ProcessNVariateLognormal*> (processo)->getSigma();
+	std::vector<std::vector<double>> * rho = 
+		dynamic_cast<ProcessNVariateLognormal*>(processo)->getRho();
+	const std::vector<double> * w = underlyingBasket->get_weights();
+
+	basketSigma = 0;
+
+	for (size_t i = 0; i < w -> size(); ++i)
+	{
+		for (size_t j = 0; j < w -> size(); ++j)
+		{
+			basketSigma += (*w)[i] * (*w)[j] * (*sigma)[i] * (*sigma)[j] * (*rho)[i][j];
+		}
+	}
+	basketSigma = sqrt(basketSigma);
+}
+
+double BSBasketOptionPricer::getOptionPrice()
+{
+
+	double price = bsprice(basketMultiplier,
+			option->getStrike() * basketMultiplier,
 			riskFreeRate,
 			option->getExpiry(),
 			basketSigma,

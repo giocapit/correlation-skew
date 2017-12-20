@@ -5,4 +5,5 @@ target_sources(cmdCalculateCorrelationSkew
 	${CMAKE_CURRENT_LIST_DIR}/BasketOption.cpp
 	${CMAKE_CURRENT_LIST_DIR}/Option.cpp
 	${CMAKE_CURRENT_LIST_DIR}/Basket.cpp
+	${CMAKE_CURRENT_LIST_DIR}/Nbasket.cpp
 	${CMAKE_CURRENT_LIST_DIR}/CorrelationExtractors.cpp)

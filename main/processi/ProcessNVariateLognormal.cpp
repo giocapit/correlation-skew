@@ -3,14 +3,24 @@
 
 
 
-ProcessNVariateLognormal::ProcessNVariateLognormal(size_t _basket_size, vector<double> _sigma,duble _rho):
+ProcessNVariateLognormal::ProcessNVariateLognormal(size_t _basket_size, std::vector<double> _sigma,double _rho):
 			Process(),
 			basket_size(_basket_size),
 			sigma (std::move(_sigma)),
-			rho(vector<double> tmp(_rho, _basket_size) , _basket_size )
+			rho(_basket_size,std::vector<double> (_basket_size,_rho))
 		{
-			for (size_t i=0; ++i; i < basket_size)
+			for (size_t i=0; i < basket_size; ++i)
 			{
 				rho[i][i] = 1;
 			}
 		};
+
+std::vector<double> * ProcessNVariateLognormal::getSigma()
+{
+	return & sigma;
+};
+
+		std::vector<std::vector<double>> * ProcessNVariateLognormal::getRho()
+{
+	return & rho;
+}

@@ -2,13 +2,18 @@
 #define basket_option_formula_price_hpp
 #include "OptionPricer.hpp"
 #include "BasketOption.hpp"
+#include "NbasketOption.hpp"
 #include "Functional.hpp"
 #include "LognormalDistribution.hpp"
 
 class BSBasketOptionPricer: public OptionPricer
-{
+{	private:
+		double basketSigma;
+		double basketMultiplier;
 	public:
-		BSBasketOptionPricer(const BasketOption *opzione, Process *processo, double riskFreeRate): OptionPricer(opzione, processo, riskFreeRate){};
+		BSBasketOptionPricer(const Option *opzione, Process *processo, double riskFreeRate);
+
+		BSBasketOptionPricer(const NbasketOption *opzione, Process *processo, double riskFreeRate);
 
 		~BSBasketOptionPricer(){};
 
