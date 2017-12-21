@@ -66,7 +66,7 @@ JuBasketOptionPricer::JuBasketOptionPricer(const NbasketOption *option, Process 
 	{
 		for (size_t j = 0; j < sigma -> size(); ++j)
 		{
-			U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j];
+			U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * exp(2 * riskFreeRate);
 		}
 	}
 	
@@ -239,7 +239,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 	{
 		for (size_t j = 0; j < sigma -> size(); ++j)
 		{
-			dU2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * (*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j];
+			dU2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * exp(2 * riskFreeRate) * (*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j];
 		}
 	}
 
@@ -250,7 +250,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 	{
 		for (size_t j = 0; j < sigma -> size(); ++j)
 		{
-			d2U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * pow((*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j],2);
+			d2U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * exp(2 * riskFreeRate) * pow((*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j],2);
 		}
 	}
 	
@@ -260,7 +260,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 	{
 		for (size_t j = 0; j < sigma -> size(); ++j)
 		{
-			d3U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * pow((*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j],3);
+			d3U2 += pow(multiplier,2) * (*weights)[i] * (*weights)[j] * exp(2 * riskFreeRate) * pow((*sigma)[i] * (*sigma)[j] * (*rhoMatrix)[i][j],3);
 		}
 	}
 
@@ -272,7 +272,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 		{
 			for (size_t k = 0; k < sigma -> size(); ++k)
 			{
-				b1 += (*weights)[i] * (*weights)[j] * (*weights)[k] 
+				b1 += (*weights)[i] * (*weights)[j] * (*weights)[k]
 					* (*sigma)[i] * (*sigma)[k] * (*rhoMatrix)[i][k]
 					* (*sigma)[j] * (*sigma)[k] * (*rhoMatrix)[j][k];
 			}
@@ -291,7 +291,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 			{
 				for (size_t l = 0; l < sigma -> size(); ++l)
 				{
-					k1 += (*weights)[i] * (*weights)[j] * (*weights)[k] * (*weights)[l]
+					k1 += (*weights)[i] * (*weights)[j] * (*weights)[k] * (*weights)[l] * exp(4 * riskFreeRate)
 						* (*sigma)[i] * (*sigma)[l] * (*rhoMatrix)[i][l]
 						* (*sigma)[j] * (*sigma)[k] * (*rhoMatrix)[j][k]
 						* (*sigma)[l] * (*sigma)[k] * (*rhoMatrix)[l][k];
@@ -320,7 +320,7 @@ JuBasketOptionPricer::coeff_for_Nbasket::coeff_for_Nbasket(double multiplier,
 			}
 		}
 	}
-	k2 = 6 * pow(multiplier,4) * k2;
+	k2 = 6 * pow(multiplier,4) * exp(4 * riskFreeRate) * k2;
 		
 	//q1:
 	
