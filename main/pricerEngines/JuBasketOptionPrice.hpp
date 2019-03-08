@@ -64,7 +64,8 @@ class JuBasketOptionPricer: public BSBasketOptionPricer
 						double w2,
 						double sigma1,
 						double sigma2,
-						double rho);
+						double rho,
+						double riskFreeRate);
 		};
 
 		struct coeff_for_Nbasket: coefficients {
@@ -75,7 +76,8 @@ class JuBasketOptionPricer: public BSBasketOptionPricer
 			coeff_for_Nbasket(double multiplier, 
 					std::vector<double> * sigma,
 					std::vector<vector<double>> * rhoMatrix,
-					const std::vector<double> * weights);
+					const std::vector<double> * weights,
+					double riskFreeRate);
 		};
 
 };    
